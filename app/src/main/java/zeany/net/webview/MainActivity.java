@@ -12,6 +12,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String ENTRY_URL = "file:///android_asset/www/index.html";
+
     private WebView mWebView;
 
     @Override
@@ -29,6 +31,21 @@ public class MainActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // 여기서 WebView의 데이터를 가져오는 작업을 한다.
+                if (url.equals(ENTRY_URL)) {
+                    String keyword = "tistory";
+
+                    String script = "javascript:function afterLoad() {"
+                            + "document.getElementById('keyword').value = '" + keyword + "';"
+                            + "};"
+                            + "afterLoad();";
+
+                    view.loadUrl(script);
+                }
             }
         });
 
@@ -75,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mWebView.loadUrl("file:///android_asset/www/index.html");
+        mWebView.loadUrl(ENTRY_URL);
     }
 
     @Override
