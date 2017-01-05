@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mWebView.loadUrl("http://zeany.tistory.com");
+        mWebView.loadUrl("file:///android_asset/www/index.html");
     }
 
     @Override
