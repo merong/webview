@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String script = "javascript:function afterLoad() {"
                             + "document.getElementById('keyword').value = '" + keyword + "';"
+                            + "document.forms[0].setAttribute('onsubmit', 'window.Zeany.justDoIt(elements[0].value); return true;');"
                             + "};"
                             + "afterLoad();";
 
