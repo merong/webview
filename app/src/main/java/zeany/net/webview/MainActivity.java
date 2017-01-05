@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ENTRY_URL = "file:///android_asset/www/index.html";
@@ -25,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
+        mWebView.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void justDoIt(String keyword) {
+                Toast.makeText(MainActivity.this, "Keyword is " + keyword, Toast.LENGTH_LONG).show();
+            }
+        }, "Zeany");
 
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
