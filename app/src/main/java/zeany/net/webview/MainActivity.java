@@ -1,7 +1,9 @@
 package zeany.net.webview;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -18,10 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView mWebView;
 
+    private SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sp = getSharedPreferences("myFile", Activity.MODE_PRIVATE);
 
         mWebView = (WebView) findViewById(R.id.activity_main_webview);
 
@@ -32,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
             @JavascriptInterface
             public void justDoIt(String keyword) {
                 Toast.makeText(MainActivity.this, "Keyword is " + keyword, Toast.LENGTH_LONG).show();
+
+                SharedPreferences.Editor editor = sp.edit();
+
+                editor.putString("keyword", keyword);
+
+                editor.commit();
             }
         }, "Zeany");
 
@@ -44,9 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                // 여기서 WebView의 데이터를 가져오는 작업을 한다.
                 if (url.equals(ENTRY_URL)) {
-                    String keyword = "tistory";
+                    String keyword = sp.getString("keyword", "");
 
                     String script = "javascript:function afterLoad() {"
                             + "document.getElementById('keyword').value = '" + keyword + "';"
