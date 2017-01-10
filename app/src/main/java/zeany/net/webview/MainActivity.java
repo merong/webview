@@ -1,72 +1,36 @@
 package zeany.net.webview;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String ENTRY_URL = "file:///android_asset/www/index.html";
+    private static final String ENTRY_URL = "http://zeany.tistory.com";
 
     private WebView mWebView;
-
-    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sp = getSharedPreferences("myFile", Activity.MODE_PRIVATE);
-
         mWebView = (WebView) findViewById(R.id.activity_main_webview);
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-
-        mWebView.addJavascriptInterface(new Object() {
-            @JavascriptInterface
-            public void justDoIt(String keyword) {
-                Toast.makeText(MainActivity.this, "Keyword is " + keyword, Toast.LENGTH_LONG).show();
-
-                SharedPreferences.Editor editor = sp.edit();
-
-                editor.putString("keyword", keyword);
-
-                editor.commit();
-            }
-        }, "Zeany");
 
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                if (url.equals(ENTRY_URL)) {
-                    String keyword = sp.getString("keyword", "");
-
-                    String script = "javascript:function afterLoad() {"
-                            + "document.getElementById('keyword').value = '" + keyword + "';"
-                            + "document.forms[0].setAttribute('onsubmit', 'window.Zeany.justDoIt(elements[0].value); return true;');"
-                            + "};"
-                            + "afterLoad();";
-
-                    view.loadUrl(script);
-                }
             }
         });
 
